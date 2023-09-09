@@ -1,10 +1,9 @@
-from rest_framework import generics, status, permissions
-from rest_framework.response import Response
+from rest_framework import generics
 
 from core.permissions import IsStaffOrReadOnly
 from news.models import News
 from news.pagination import NewsPagination
-from news.serializers import NewsListSerializer, NewsDetailSerializer
+from news.serializers import NewsDetailSerializer, NewsListSerializer
 
 
 class NewsList(generics.ListCreateAPIView):

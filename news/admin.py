@@ -23,7 +23,10 @@ class NewsAdmin(admin.ModelAdmin):
         "datetime_created",
         "datetime_updated",
     )
-    search_fields = ("title", "text",)
+    search_fields = (
+        "title",
+        "text",
+    )
     readonly_fields = (
         "datetime_created",
         "datetime_updated",

@@ -1,6 +1,5 @@
 import reprlib
 
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
@@ -9,8 +8,7 @@ class News(models.Model):
         verbose_name="Заголовок",
     )
     text = models.TextField(
-        verbose_name="Текст",
-        help_text="Поддерживается синтаксис Markdown"
+        verbose_name="Текст", help_text="Поддерживается синтаксис Markdown"
     )
     datetime_created = models.DateTimeField(
         verbose_name="Дата создания",
