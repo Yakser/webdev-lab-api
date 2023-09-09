@@ -18,7 +18,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Apps
-    # "yourapp.apps.YourAppConfig",
+    "users.apps.UsersConfig",
+    "news.apps.NewsConfig",
+    "comments.apps.CommentsConfig",
     # Plugins
     "corsheaders",
     "drf_yasg",

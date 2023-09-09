@@ -10,7 +10,7 @@ schema_view = get_schema_view(
         default_version="v1",
         description="Service API docs",
     ),
-    public=True,
+    public=False,
     permission_classes=[IsAdminUser],
 )
 
@@ -27,4 +27,5 @@ urlpatterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
+    path("news/", include("news.urls", namespace="news")),
 ]
