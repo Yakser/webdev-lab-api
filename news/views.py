@@ -16,4 +16,4 @@ class NewsList(generics.ListCreateAPIView):
 class NewsDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = NewsDetailSerializer
     permission_classes = [IsStaffOrReadOnly]
-    queryset = News.objects.all()
+    queryset = News.objects.prefetch_related("comments").all()

@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     # Plugins
     "corsheaders",
     "drf_yasg",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
