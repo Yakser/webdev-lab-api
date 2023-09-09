@@ -28,4 +28,5 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path("news/", include("news.urls", namespace="news")),
+    path("comments/", include("comments.urls", namespace="comments")),
 ]
