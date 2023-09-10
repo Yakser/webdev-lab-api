@@ -11,7 +11,8 @@ class CommentListSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         comment = Comment(**validated_data)
         comment.save()
-        notify_moderators_about_new_comment(comment)
+        author_fullname = f"{comment.author.first_name} {comment.author.last_name}"
+        notify_moderators_about_new_comment.delay(author_fullname, comment.pk)
         return comment
 
     class Meta:

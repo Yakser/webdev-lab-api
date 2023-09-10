@@ -1,16 +1,17 @@
+from celery import shared_task
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
-from comments.models import Comment
 
 User = get_user_model()
 
 
-def notify_moderators_about_new_comment(comment: Comment) -> None:
+@shared_task
+def notify_moderators_about_new_comment(author_fullname: str, comment_pk: int) -> None:
     context = {
-        "user": comment.author,
-        "comment": comment,
+        "author_fullname": author_fullname,
+        "comment_pk": comment_pk,
     }
 
     # email_html_message = render_to_string("email/password_reset_email.html", context)

@@ -1,2 +1,2 @@
-Проверьте новый комментарий от пользователя {{ user.username }} {{ user.first_name }} {{ user.last_name }}!
-http://localhost:8000/admin/comments/comment/{{ comment.pk }}/change/
+Проверьте новый комментарий от пользователя {{ author_fullname }}!
+http://localhost:8000/admin/comments/comment/{{ comment_pk }}/change/
