@@ -1,12 +1,12 @@
 from rest_framework import generics
 
 from comments.models import Comment
-from comments.serializers import CommentsListSerializer
+from comments.serializers import CommentListSerializer
 from core.permissions import IsAuthorOrReadOnly
 
 
-class CommentsList(generics.ListCreateAPIView):
-    serializer_class = CommentsListSerializer
+class CommentList(generics.ListCreateAPIView):
+    serializer_class = CommentListSerializer
     permission_classes = [IsAuthorOrReadOnly]
     queryset = Comment.objects.all()
     # todo

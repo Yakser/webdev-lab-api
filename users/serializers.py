@@ -1,26 +1,27 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from news.models import News
+User = get_user_model()
 
 
-class NewsListSerializer(serializers.ModelSerializer):
+class UserListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = News
+        model = User
         fields = [
             "id",
-            "title",
-            "text",
-            "datetime_created",
+            "username",
+            "first_name",
+            "last_name",
         ]
 
 
-class NewsDetailSerializer(serializers.ModelSerializer):
+class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = News
+        model = User
         fields = [
             "id",
-            "title",
-            "text",
-            "datetime_created",
-            "datetime_updated",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
         ]
