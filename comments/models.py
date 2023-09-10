@@ -3,6 +3,7 @@ import reprlib
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from comments.managers import CommentManager
 from news.models import News
 
 User = get_user_model()
@@ -19,7 +20,9 @@ class Comment(models.Model):
         News, related_name="comments", on_delete=models.CASCADE, verbose_name="Новость"
     )
     text = models.TextField()
-    is_moderated = models.BooleanField(verbose_name="Проверен модератором")
+    is_moderated = models.BooleanField(
+        verbose_name="Проверен модератором", default=False
+    )
     datetime_created = models.DateTimeField(
         verbose_name="Дата создания",
         null=False,
@@ -30,6 +33,8 @@ class Comment(models.Model):
         null=False,
         auto_now=True,
     )
+
+    objects = CommentManager()
 
     class Meta:
         verbose_name = "Комментарий"
