@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-admin.site.unregister(User)
+
+# admin.site.unregister(User)
 
 
 @admin.register(User)
@@ -11,16 +12,16 @@ class UserAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "Аккаунт",
-            {"fields": ("username",)},
+            {
+                "fields": (
+                    "username",
+                    "email",
+                )
+            },
         ),
         (
             "Конфиденциальная информация",
-            {
-                "fields": (
-                    "email",
-                    "password",
-                )
-            },
+            {"fields": ("password",)},
         ),
         (
             "Персональная информация",
