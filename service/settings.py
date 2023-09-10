@@ -116,7 +116,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com", cast=str)
 EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
 EMAIL_HOST_USER = config("EMAIL_USER", default="", cast=str)
-EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD", defaul="", cast=str)
+EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD", default="", cast=str)
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
