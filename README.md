@@ -1,4 +1,4 @@
-# drf_template
+# webdev-lab-api
 Template of a Python service that uses Django-REST framework with poetry. Build, test and CI scripts ready.
 
 ![Linters](https://github.com/TimePeak/users/actions/workflows/linters.yml/badge.svg)
@@ -37,3 +37,5 @@ pre-commit run --all-files
 ### Run project
 
 🚀 Run project via `python manage.py runserver`
+
+Run celery worker via `celery -A service worker -l INFO -P eventlet`

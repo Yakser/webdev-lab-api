@@ -115,8 +115,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com", cast=str)
 EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
-EMAIL_HOST_USER = config("EMAIL_USER", cast=str, default="example@mail.ru")
-EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD", cast=str, default="password")
+EMAIL_HOST_USER = config("EMAIL_USER", cast=str)
+EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD", cast=str)
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
@@ -149,8 +149,13 @@ default_user_authentication_rule",
 if DEBUG:
     SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"] = timedelta(weeks=2)
 
-
 # Celery Configuration Options
 CELERY_TIMEZONE = "Europe/Moscow"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BROKER_URL = config(
+    "CELERY_BROKER_URL", cast=str, default="redis://localhost:6379"
+)
+CELERY_RESULT_BACKEND = config(
+    "CELERY_RESULT_BACKEND", cast=str, default="redis://localhost:6379"
+)
