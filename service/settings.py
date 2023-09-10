@@ -159,3 +159,16 @@ CELERY_BROKER_URL = config(
 CELERY_RESULT_BACKEND = config(
     "CELERY_RESULT_BACKEND", cast=str, default="redis://localhost:6379"
 )
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379",
+    }
+}
+
+
+# from django.core.cache import cache
+#
+# cache.clear()

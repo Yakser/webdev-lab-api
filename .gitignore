@@ -153,3 +153,7 @@ dmypy.json
 cython_debug/
 
 .idea/
+
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir

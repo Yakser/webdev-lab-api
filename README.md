@@ -39,3 +39,4 @@ pre-commit run --all-files
 🚀 Run project via `python manage.py runserver`
 
 Run celery worker via `celery -A service worker -l INFO -P eventlet`
+Run celery scheduler via `celery -A service beat`
