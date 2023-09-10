@@ -27,6 +27,7 @@ urlpatterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
+    path("auth/", include("auth.urls", namespace="auth")),
     path("news/", include("news.urls", namespace="news")),
     path("comments/", include("comments.urls", namespace="comments")),
 ]
