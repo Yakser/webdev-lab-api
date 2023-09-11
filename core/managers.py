@@ -1,10 +1,12 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db import models
+from django.utils import timezone
 
 from core.constants import VIEWS_CACHING_TIMEOUT
-
 
 User = get_user_model()
 
@@ -52,3 +54,14 @@ class ViewManager(models.Manager):
             )
 
         return views_count
+
+    def count_created_last_24_hours(self, obj):
+        obj_type = ContentType.objects.get_for_model(obj)
+        return (
+            self.get_queryset()
+            .filter(
+                datetime_created__gte=timezone.now() - timedelta(days=1),
+                content_type=obj_type,
+            )
+            .count()
+        )

@@ -4,18 +4,25 @@ from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
+from comments.models import Comment
+from core.models import View
+from news.models import News
+
 User = get_user_model()
 
 
 @shared_task
-def notify_admins_about_new_comment(author_fullname: str, comment_pk: int) -> None:
+def send_statistics_to_admins_task():
     context = {
-        "author_fullname": author_fullname,
-        "comment_pk": comment_pk,
+        "comments_count": Comment.objects.count(),
+        "comments_count_last_24_hours": Comment.objects.count_created_last_24_hours(),
+        "news_views_count_last_24_hours": View.objects.count_created_last_24_hours(
+            News
+        ),
     }
 
-    # email_html_message = render_to_string("email/password_reset_email.html", context)
-    email_plaintext_message = render_to_string("emails/new_comment.txt", context)
+    # email_html_message = render_to_string("emails/statistics.html", context)
+    email_plaintext_message = render_to_string("emails/daily_statistics.txt", context)
 
     moderators_emails = [
         moderator["email"]
@@ -23,7 +30,7 @@ def notify_admins_about_new_comment(author_fullname: str, comment_pk: int) -> No
     ]
 
     msg = EmailMultiAlternatives(
-        "Новый комментарий | webdev-lab",
+        "Статистика | webdev-lab",
         email_plaintext_message,
         settings.EMAIL_HOST,
         moderators_emails,  # todo

@@ -28,6 +28,11 @@ class View(Model):
     )
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+    datetime_created = models.DateTimeField(
+        verbose_name="Дата создания",
+        null=False,
+        auto_now_add=True,
+    )
 
     objects = ViewManager()
 
