@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
 from comments.models import Comment
-from comments.service import notify_moderators_about_new_comment
+from comments.service import (
+    notify_admins_about_new_comment,
+)
 from users.serializers import UserListSerializer
 
 
@@ -12,7 +14,7 @@ class CommentListSerializer(serializers.ModelSerializer):
         comment = Comment(**validated_data)
         comment.save()
         author_fullname = f"{comment.author.first_name} {comment.author.last_name}"
-        notify_moderators_about_new_comment.delay(author_fullname, comment.pk)
+        notify_admins_about_new_comment.delay(author_fullname, comment.pk)
         return comment
 
     class Meta:

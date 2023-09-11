@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     "drf_yasg",
     "rest_framework",
     "rest_framework_simplejwt",
+    "django_celery_results",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -159,7 +161,8 @@ CELERY_BROKER_URL = config(
 CELERY_RESULT_BACKEND = config(
     "CELERY_RESULT_BACKEND", cast=str, default="redis://localhost:6379"
 )
-
+# CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 CACHES = {
     "default": {
@@ -167,7 +170,6 @@ CACHES = {
         "LOCATION": "redis://localhost:6379",
     }
 }
-
 
 # from django.core.cache import cache
 #
