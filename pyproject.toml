@@ -23,6 +23,8 @@ redis = "^5.0.0"
 django-redis = "^5.3.0"
 django-celery-beat = "^2.5.0"
 django-celery-results = "^2.5.1"
+channels = {extras = ["daphne"], version = "^4.0.0"}
+channels-redis = "^4.1.0"
 
 
 [build-system]

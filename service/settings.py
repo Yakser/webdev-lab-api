@@ -10,8 +10,8 @@ SECRET_KEY = config("DJANGO_SECRET_KEY", default="django-default-secret-key", ca
 DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = []
-
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -172,6 +172,13 @@ CACHES = {
     }
 }
 
-# from django.core.cache import cache
-#
-# cache.clear()
+ASGI_APPLICATION = "service.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
