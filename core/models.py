@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from django.db import models
 
+from core.managers import ViewManager
+
 User = get_user_model()
 
 
@@ -26,6 +28,8 @@ class View(Model):
     )
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+
+    objects = ViewManager()
 
     class Meta:
         unique_together = (

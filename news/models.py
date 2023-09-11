@@ -1,6 +1,9 @@
 import reprlib
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+
+from core.models import View
 
 
 class News(models.Model):
@@ -9,6 +12,10 @@ class News(models.Model):
     )
     text = models.TextField(
         verbose_name="Текст", help_text="Поддерживается синтаксис Markdown"
+    )
+    views = GenericRelation(
+        View,
+        related_query_name="news_views",
     )
     datetime_created = models.DateTimeField(
         verbose_name="Дата создания",
