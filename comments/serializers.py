@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from comments.models import Comment
-from comments.service import (
+from comments.tasks import (
     notify_admins_about_new_comment,
 )
 from users.serializers import UserListSerializer

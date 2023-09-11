@@ -1,11 +1,8 @@
-from datetime import timedelta
-
 from celery import shared_task
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.conf import settings
-from django.utils import timezone
 
 from comments.models import Comment
 
@@ -37,17 +34,11 @@ def notify_admins_about_new_comment(author_fullname: str, comment_pk: int) -> No
     msg.send()
 
 
-def count_comments_created_last_24_hours():
-    return Comment.objects.filter(
-        datetime_created__gte=timezone.now() - timedelta(days=1)
-    ).count()
-
-
 @shared_task
 def send_statistics_to_admins_task():
     context = {
         "comments_count": Comment.objects.count(),
-        "comments_count_last_24_hours": count_comments_created_last_24_hours(),
+        "comments_count_last_24_hours": Comment.objects.count_created_last_24_hours(),
     }
 
     # email_html_message = render_to_string("emails/statistics.html", context)
