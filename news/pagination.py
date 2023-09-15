@@ -10,6 +10,6 @@ class NewsPagination(pagination.LimitOffsetPagination):
         gets the next 10 news after the first 10 news.
     """
 
-    default_limit = 10
+    default_limit = 5
     limit_query_param = "limit"
     offset_query_param = "offset"

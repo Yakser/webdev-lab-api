@@ -14,14 +14,14 @@ User = get_user_model()
 class ViewManager(models.Manager):
     def add_view(self, obj, user):
         obj_type = ContentType.objects.get_for_model(obj)
-        view, is_created = self.get_queryset().objects.get_or_create(
+        view, is_created = self.get_queryset().get_or_create(
             content_type=obj_type, object_id=obj.id, user=user
         )
         return view
 
     def remove_view(self, obj, user) -> None:
         obj_type = ContentType.objects.get_for_model(obj)
-        self.get_queryset().objects.filter(
+        self.get_queryset().filter(
             content_type=obj_type, object_id=obj.id, user=user
         ).delete()
 
@@ -29,7 +29,7 @@ class ViewManager(models.Manager):
         if not user.is_authenticated:
             return False
         obj_type = ContentType.objects.get_for_model(obj)
-        views = self.get_queryset().objects.filter(
+        views = self.get_queryset().filter(
             content_type=obj_type, object_id=obj.id, user=user
         )
         return views.exists()
