@@ -8,6 +8,9 @@ class CommentManager(models.Manager):
     def get_moderated(self):
         return self.get_queryset().filter(is_moderated=True).all()
 
+    def get_unmoderated(self):
+        return self.get_queryset().filter(is_moderated=False).all()
+
     def count_created_last_24_hours(self):
         return (
             self.get_queryset()

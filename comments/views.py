@@ -2,8 +2,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 
 from comments.models import Comment
-from comments.serializers import CommentListSerializer
-from core.permissions import IsAuthorOrReadOnly
+from comments.serializers import CommentListSerializer, UnmoderatedCommentSerializer
+from core.permissions import IsAuthorOrReadOnly, IsStaff
 
 
 class CommentList(generics.ListCreateAPIView):
@@ -24,6 +24,18 @@ class CommentList(generics.ListCreateAPIView):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class UnmoderatedCommentList(generics.ListAPIView):
+    serializer_class = CommentListSerializer
+    permission_classes = [IsStaff]
+    queryset = Comment.objects.get_unmoderated()
+
+
+class UnmoderatedCommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UnmoderatedCommentSerializer
+    permission_classes = [IsStaff]
+    queryset = Comment.objects.get_unmoderated()
 
 
 # todo: set_moderated view

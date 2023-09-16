@@ -28,3 +28,12 @@ class CommentListSerializer(serializers.ModelSerializer):
         ]
 
         extra_kwargs = {"author": {"read_only": True}}
+
+
+class UnmoderatedCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            "id",
+            "is_moderated",
+        ]

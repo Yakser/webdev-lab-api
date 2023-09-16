@@ -28,3 +28,4 @@ class CommentsAdmin(admin.ModelAdmin):
         "datetime_created",
         "datetime_updated",
     )
+    ordering = ("is_moderated", "-datetime_created")
