@@ -27,9 +27,17 @@ class NewsList(generics.ListCreateAPIView):
         return super().get(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data["author"] = request.user
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
         delete_cache(self.CACHE_KEY_PREFIX)
-        return response
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 class CurrentUserNewsList(generics.ListAPIView):
