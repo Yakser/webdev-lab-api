@@ -1,9 +1,12 @@
 import reprlib
 
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from core.models import View
+
+User = get_user_model()
 
 
 class News(models.Model):
@@ -12,6 +15,12 @@ class News(models.Model):
     )
     text = models.TextField(
         verbose_name="Текст", help_text="Поддерживается синтаксис Markdown"
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="news",
+        verbose_name="Автор",
     )
     views = GenericRelation(
         View,

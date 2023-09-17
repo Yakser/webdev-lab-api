@@ -1,9 +1,11 @@
+from django.db.models import Prefetch
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from comments.models import Comment
 from core.models import View
 from core.permissions import IsStaffOrReadOnly
 from core.serializers import SetViewedSerializer
@@ -30,10 +32,23 @@ class NewsList(generics.ListCreateAPIView):
         return response
 
 
+class CurrentUserNewsList(generics.ListAPIView):
+    serializer_class = NewsListSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = News.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        news = News.objects.filter(author_id=request.user.id)
+        news_serialized = NewsListSerializer(news, many=True).data
+        return Response(news_serialized, status=status.HTTP_200_OK)
+
+
 class NewsDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = NewsDetailSerializer
     permission_classes = [IsStaffOrReadOnly]
-    queryset = News.objects.prefetch_related("comments").all()
+    queryset = News.objects.prefetch_related(
+        Prefetch("comments", queryset=Comment.objects.get_moderated())
+    ).all()
 
     CACHE_KEY_PREFIX = "news_detail"
 

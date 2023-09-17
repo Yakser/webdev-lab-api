@@ -8,14 +8,14 @@ class NewsAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "title",
-        "text",
+        "author",
         "datetime_created",
         "datetime_updated",
     )
     list_display_links = (
         "id",
         "title",
-        "text",
+        "author",
         "datetime_created",
         "datetime_updated",
     )
@@ -26,6 +26,7 @@ class NewsAdmin(admin.ModelAdmin):
     search_fields = (
         "title",
         "text",
+        "author",
     )
     readonly_fields = (
         "datetime_created",
