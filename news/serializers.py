@@ -21,7 +21,7 @@ class NewsListSerializer(serializers.ModelSerializer):
 
 class NewsDetailSerializer(serializers.ModelSerializer):
     author = UserListSerializer(required=False, read_only=True)
-    comments = CommentListSerializer(many=True)
+    comments = CommentListSerializer(many=True, read_only=True)
 
     class Meta:
         model = News

@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from comments.models import Comment
 from core.models import View
-from core.permissions import IsStaffOrReadOnly
+from core.permissions import IsAuthorOrReadOnly
 from core.serializers import SetViewedSerializer
 from core.utils import delete_cache
 from news.models import News
@@ -53,7 +53,7 @@ class CurrentUserNewsList(generics.ListAPIView):
 
 class NewsDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = NewsDetailSerializer
-    permission_classes = [IsStaffOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly]
     queryset = News.objects.prefetch_related(
         Prefetch("comments", queryset=Comment.objects.get_moderated())
     ).all()
