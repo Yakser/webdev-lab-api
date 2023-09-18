@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from comments.serializers import CommentListSerializer
 from news.models import News
 from users.serializers import UserListSerializer
 
@@ -21,7 +20,7 @@ class NewsListSerializer(serializers.ModelSerializer):
 
 class NewsDetailSerializer(serializers.ModelSerializer):
     author = UserListSerializer(required=False, read_only=True)
-    comments = CommentListSerializer(many=True, read_only=True)
+    # comments = CommentListSerializer(many=True, read_only=True)
 
     class Meta:
         model = News
@@ -30,7 +29,7 @@ class NewsDetailSerializer(serializers.ModelSerializer):
             "title",
             "text",
             "author",
-            "comments",
+            # "comments",
             "datetime_created",
             "datetime_updated",
         ]
