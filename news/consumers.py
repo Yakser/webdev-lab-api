@@ -15,14 +15,8 @@ class NewsConsumer(JsonWebsocketConsumer):
     def receive_json(self, content, **kwargs):
         async_to_sync(self.channel_layer.group_send)(
             "broadcast",
-            {
-                "type": "news_post_added",
-                "title": content.get("title"),
-                "author_id": content.get("author_id"),
-            },
+            {"type": "news_post_added", **content},
         )
 
     def news_post_added(self, event):
-        title = event["title"]
-        author_id = event["author_id"]
-        self.send_json({"title": title, "author_id": author_id})
+        self.send_json(event)

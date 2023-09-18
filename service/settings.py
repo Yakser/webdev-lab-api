@@ -21,6 +21,7 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_HEADERS = [
     "Cache-Control",
     "Authorization",
+    "Content-Type",
 ]
 
 INSTALLED_APPS = [
