@@ -1,4 +1,3 @@
-from django.db.models import Prefetch
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import generics, status
@@ -6,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from comments.models import Comment
+from comments.serializers import CommentListSerializer
 from core.models import View
 from core.permissions import IsAuthorOrReadOnly
 from core.serializers import SetViewedSerializer
@@ -22,7 +22,7 @@ class NewsList(generics.ListCreateAPIView):
     pagination_class = NewsPagination
     CACHE_KEY_PREFIX = "news_list"
 
-    @method_decorator(cache_page(60 * 2, key_prefix=CACHE_KEY_PREFIX))
+    # @method_decorator(cache_page(60 * 2, key_prefix=CACHE_KEY_PREFIX))
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -40,23 +40,10 @@ class NewsList(generics.ListCreateAPIView):
         )
 
 
-class CurrentUserNewsList(generics.ListAPIView):
-    serializer_class = NewsListSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = News.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        news = News.objects.filter(author_id=request.user.id)
-        news_serialized = NewsListSerializer(news, many=True).data
-        return Response(news_serialized, status=status.HTTP_200_OK)
-
-
 class NewsDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = NewsDetailSerializer
     permission_classes = [IsAuthorOrReadOnly]
-    queryset = News.objects.prefetch_related(
-        Prefetch("comments", queryset=Comment.objects.get_moderated())
-    ).all()
+    queryset = News.objects.all()
 
     CACHE_KEY_PREFIX = "news_detail"
 
@@ -81,3 +68,48 @@ class NewsSetViewed(generics.GenericAPIView):
             return Response(status=status.HTTP_200_OK)
         except News.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class NewsCommentList(generics.ListCreateAPIView):
+    serializer_class = CommentListSerializer
+    permission_classes = [IsAuthorOrReadOnly]
+    queryset = Comment.objects.all()
+
+    CACHE_KEY_PREFIX = "news_comment_list"
+
+    @method_decorator(cache_page(60 * 2, key_prefix=CACHE_KEY_PREFIX))
+    def get(self, request, *args, **kwargs):
+        try:
+            news = News.objects.get(id=kwargs["pk"])
+            comments = (
+                Comment.objects.get_moderated()
+                .select_related("news")
+                .filter(news__id=news.id)
+            )
+            comments_serialized = CommentListSerializer(comments, many=True).data
+            return Response(status=status.HTTP_200_OK, data=comments_serialized)
+        except News.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data["author"] = request.user
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        delete_cache(self.CACHE_KEY_PREFIX)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+
+class CurrentUserNewsList(generics.ListAPIView):
+    serializer_class = NewsListSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = News.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        news = News.objects.filter(author_id=request.user.id)
+        news_serialized = NewsListSerializer(news, many=True).data
+        return Response(news_serialized, status=status.HTTP_200_OK)
