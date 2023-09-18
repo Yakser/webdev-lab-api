@@ -12,8 +12,8 @@ class NewsListSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
-            "author",
             "text",
+            "author",
             "datetime_created",
         ]
 

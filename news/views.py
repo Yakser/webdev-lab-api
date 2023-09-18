@@ -1,7 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, status, viewsets
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from comments.models import Comment
@@ -50,6 +50,58 @@ class NewsDetail(generics.RetrieveUpdateDestroyAPIView):
     @method_decorator(cache_page(60 * 2, key_prefix=CACHE_KEY_PREFIX))
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        delete_cache(self.CACHE_KEY_PREFIX)
+        return response
+
+
+class NewsViewSet(viewsets.ModelViewSet):
+    serializer_class = NewsListSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = News.objects.all()
+    pagination_class = NewsPagination
+    CACHE_KEY_PREFIX = "news-viewset"
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == "create":
+            permission_classes = [IsAuthenticated]
+        elif self.action in ["update", "partial_update", "delete"]:
+            permission_classes = [IsAuthorOrReadOnly]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+    @method_decorator(cache_page(60 * 2, key_prefix=CACHE_KEY_PREFIX))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data["author"] = request.user
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        delete_cache(self.CACHE_KEY_PREFIX)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+    def destroy(self, request, *args, **kwargs):
+        response = super().destroy(request, *args, **kwargs)
+        delete_cache(self.CACHE_KEY_PREFIX)
+        return response
+
+    def partial_update(self, request, *args, **kwargs):
+        response = super().partial_update(request, *args, **kwargs)
+        delete_cache(self.CACHE_KEY_PREFIX)
+        return response
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
